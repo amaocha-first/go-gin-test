@@ -41,7 +41,7 @@ func dbGetAll() []Todo {
 	if err != nil {
 		panic("couldn't open db")
 	}
-	todos := []Todo
+	var todos []Todo
 	db.Order("created_at desc").Find(&todos)
 	db.Close()
 	return todos
@@ -54,7 +54,7 @@ func dbGetOne(id int) Todo {
 		panic("couldn't open db")
 	}
 	var todo Todo
-	db.First(&Todo, id)
+	db.First(&todo, id)
 	db.Close()
 	return todo
 }
@@ -127,17 +127,17 @@ func main() {
 		}
 		text := ctx.PostForm("text")
 		status := ctx.PostForm("status")
-		todo := dbUpdate(id, text, status)
+		dbUpdate(id, text, status)
 		ctx.Redirect(302, "/")
 	})
 
 	//削除確認
 	router.GET("/delete_check/:id", func(ctx *gin.Context) {
 		n := ctx.Param("id")
-        id, err := strconv.Atoi(n)
-        if err != nil {
-            panic("ERROR")
-        }
+		id, err := strconv.Atoi(n)
+		if err != nil {
+			panic("ERROR")
+		}
 		todo := dbGetOne(id)
 		ctx.HTML(200, "delete.html", gin.H{"todo": todo})
 	})
@@ -145,9 +145,9 @@ func main() {
 	//Delete
 	router.POST("/delete/:id", func(ctx *gin.Context) {
 		n := ctx.Param("id")
-        id, err := strconv.Atoi(n)
-        if err != nil {
-            panic("ERROR")
+		id, err := strconv.Atoi(n)
+		if err != nil {
+			panic("ERROR")
 		}
 		dbDelete(id)
 		ctx.Redirect(302, "/")
