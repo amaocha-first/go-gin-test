@@ -13,6 +13,15 @@ type Todo struct {
 	Status string
 }
 
+func dbInit() {
+	db, err := gorm.Open("sqlite3", "test.sqlite3")
+	if err != nil {
+		panic("couldn't open db")
+	}
+	db.AutoMigrate(&Todo{})
+	defer db.Close()
+}
+
 func main() {
 	router := gin.Default()
 	router.LoadHTMLGlob("templates/*.html")
